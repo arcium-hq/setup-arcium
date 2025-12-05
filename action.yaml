@@ -61,6 +61,12 @@ runs:
         path: |
           ~/.cargo/bin/anchor
         key: anchor-cli-${{ runner.os }}-build-${{ inputs.anchor-version }}
+    - name: Install Linux build dependencies
+      if: runner.os == 'Linux' && steps.cache-anchor-cli.outputs.cache-hit != 'true'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential pkg-config libudev-dev libssl-dev
+      shell: bash
     - name: Install Anchor CLI
       run: cargo install --git https://github.com/solana-foundation/anchor --tag v${{ inputs.anchor-version }} anchor-cli --locked --force
       shell: bash
