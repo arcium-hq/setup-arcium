@@ -11,17 +11,17 @@ inputs:
   solana-cli-version:
     description: 'Version of Solana CLI to use. Must be greater than 2.0'
     required: false
-    default: '2.1.20' 
+    default: '2.3.0'
   anchor-version:
     description: 'Version of Anchor to use'
     required: false
-    default: '0.31.1'
+    default: '0.32.1'
   arcium-version:
     description: 'Version of Arcium to use'
     required: false
-    default: '0.3.0'
+    default: '0.5.1'
   runner-arch-os:
-    description: 'Architecture and operating system of the runner. Options: aarch64_linux, x86_64_linux, aarch64_macos, x86_64_macos'
+    description: 'Architecture and operating system of the runner. Options: x86_64_linux, aarch64_macos'
     required: true
 runs:
   using: 'composite'
@@ -54,18 +54,30 @@ runs:
     - name: Generate Solana keypair in default loc
       run: solana-keygen new -s --no-bip39-passphrase --force
       shell: bash
-    - uses: actions/cache@v4
-      name: Cache Anchor Cli
+    - uses: actions/cache/restore@v4
+      name: Restore Anchor CLI cache
       id: cache-anchor-cli
       with:
         path: |
           ~/.cargo/bin/anchor
         key: anchor-cli-${{ runner.os }}-build-${{ inputs.anchor-version }}
-        save-always: true
-    - name: Install Anchor Cli
+    - name: Install Linux build dependencies
+      if: runner.os == 'Linux' && steps.cache-anchor-cli.outputs.cache-hit != 'true'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential pkg-config libudev-dev libssl-dev
+      shell: bash
+    - name: Install Anchor CLI
       run: cargo install --git https://github.com/solana-foundation/anchor --tag v${{ inputs.anchor-version }} anchor-cli --locked --force
       shell: bash
       if: steps.cache-anchor-cli.outputs.cache-hit != 'true'
+    - uses: actions/cache/save@v4
+      name: Save Anchor CLI cache
+      if: steps.cache-anchor-cli.outputs.cache-hit != 'true'
+      with:
+        path: |
+          ~/.cargo/bin/anchor
+        key: anchor-cli-${{ runner.os }}-build-${{ inputs.anchor-version }}
     - name: Install yarn
       run: npm i -g yarn
       shell: bash
