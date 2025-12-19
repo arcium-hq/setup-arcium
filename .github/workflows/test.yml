@@ -2,6 +2,9 @@ name: Test Setup Arcium Action
 
 on:
   push:
+    branches:
+      - main
+      - 'v*.*.*'
   pull_request:
   workflow_dispatch:
 
