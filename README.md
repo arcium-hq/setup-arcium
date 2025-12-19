@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: arcium-hq/setup-arcium@v0.5.1
+      - uses: arcium-hq/setup-arcium@v0.5.2
         with:
           runner-arch-os: x86_64_linux
       - run: arcium build
         shell: bash
 ```
 
-This will use the default versions of Arcium, Anchor, Node.js, and Solana CLI tools, which are 0.5.1, 0.32.1, 20.18.0, and 2.3.0 respectively. It will run on the specified architecture and operating system (which is currently a mandatory parameter), the possible options are: `x86_64_linux`, `aarch64_macos`. You can also configure these versions like so:
+This will use the default versions of Arcium, Anchor, Node.js, and Solana CLI tools, which are 0.5.2, 0.32.1, 20.18.0, and 2.3.0 respectively. It will run on the specified architecture and operating system (which is currently a mandatory parameter), the possible options are: `x86_64_linux`, `aarch64_macos`. You can also configure these versions like so:
 
 ```yaml
 steps:
