@@ -1,0 +1,85 @@
+name: Check Arcium Releases
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Weekly on Monday 9am UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check:
+    name: Check for new Arcium version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for new Arcium version
+        id: check
+        run: |
+          # Use newest_version (not max_version) to skip alpha/pre-releases
+          LATEST=$(curl -s https://crates.io/api/v1/crates/arcium-anchor | jq -r '.crate.newest_version')
+          CURRENT=$(grep 'arcium-version:' action.yaml | grep default | sed "s/.*default: '//" | sed "s/'//")
+
+          echo "Latest on crates.io: $LATEST"
+          echo "Current in repo: $CURRENT"
+
+          if [ "$LATEST" != "$CURRENT" ]; then
+            echo "new_version=$LATEST" >> $GITHUB_OUTPUT
+            echo "has_update=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_update=false" >> $GITHUB_OUTPUT
+            echo "Already up to date"
+          fi
+        shell: bash
+
+      - name: Create update PR
+        if: steps.check.outputs.has_update == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_VERSION: ${{ steps.check.outputs.new_version }}
+        run: |
+          BRANCH="update-arcium-$NEW_VERSION"
+
+          # Check if branch/PR already exists
+          if git ls-remote --heads origin "$BRANCH" | grep -q "$BRANCH"; then
+            echo "Branch $BRANCH already exists, skipping"
+            exit 0
+          fi
+
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Create branch and update versions
+          git checkout -b "$BRANCH"
+          ./scripts/sync-version.sh "$NEW_VERSION"
+
+          # Commit and push
+          git add -A
+          git commit -m "chore: bump arcium to v$NEW_VERSION"
+          git push -u origin "$BRANCH"
+
+          # Create PR
+          gh pr create \
+            --title "Update Arcium to v$NEW_VERSION" \
+            --body "## Automated Update
+
+          This PR was automatically created because a new Arcium version was detected on crates.io.
+
+          **Version:** $NEW_VERSION
+
+          ### Changes
+          - Updated \`action.yaml\` default arcium-version
+          - Updated \`test_project/package.json\` @arcium-hq/client
+          - Updated \`test_project/*/Cargo.toml\` arcium-* crates
+          - Regenerated lock files
+
+          ### Checklist
+          - [ ] CI passes
+          - [ ] Test locally if needed
+          - [ ] Merge to trigger auto-release"
+        shell: bash

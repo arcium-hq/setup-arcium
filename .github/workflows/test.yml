@@ -15,6 +15,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate version consistency
+        run: ./scripts/validate-versions.sh
+        shell: bash
+
       - name: Use local action
         uses: ./
         with:
@@ -49,20 +53,20 @@ jobs:
         with:
           path: |
             test_project/target
-          key: cargo-target-${{ runner.os }}
-      - name: Cache encrypted-ixs target
+          key: cargo-target-${{ runner.os }}-${{ hashFiles('test_project/Cargo.lock') }}
+      - name: Cache encrypted-ixs build
         uses: actions/cache@v4
-        id: cache-encrypted-ixs-target
+        id: cache-encrypted-ixs
         with:
           path: |
-              test_project/build
-              test_project/artifacts/circuit_hash.txt
-          key: cargo-target-${{ runner.os }}      
+            test_project/build
+            test_project/artifacts/circuit_hash.txt
+          key: encrypted-ixs-${{ runner.os }}-${{ hashFiles('test_project/encrypted-ixs/**') }}      
       - name: Build arcium project
         working-directory: test_project
         run: arcium build
         shell: bash
-        if: steps.cache-encrypted-ixs-target.outputs.cache-hit != 'true' && steps.cache-cargo-target.outputs.cache-hit != 'true'
+        if: steps.cache-encrypted-ixs.outputs.cache-hit != 'true' && steps.cache-cargo-target.outputs.cache-hit != 'true'
       - name: Test arcium project
         working-directory: test_project
         run: arcium test

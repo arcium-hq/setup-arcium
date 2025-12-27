@@ -19,7 +19,7 @@ inputs:
   arcium-version:
     description: 'Version of Arcium to use'
     required: false
-    default: '0.5.1'
+    default: '0.5.4'
   runner-arch-os:
     description: 'Architecture and operating system of the runner. Options: x86_64_linux, aarch64_macos'
     required: true
@@ -49,18 +49,17 @@ runs:
       if: steps.cache-solana-cli-tools.outputs.cache-hit != 'true'
     - name: Set Solana CLI tools path
       run: |
-        echo "/home/runner/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+        echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
       shell: bash
     - name: Generate Solana keypair in default loc
       run: solana-keygen new -s --no-bip39-passphrase --force
       shell: bash
-    - uses: actions/cache/restore@v4
-      name: Restore Anchor CLI cache
+    - name: Cache Anchor CLI
+      uses: actions/cache@v4
       id: cache-anchor-cli
       with:
-        path: |
-          ~/.cargo/bin/anchor
-        key: anchor-cli-${{ runner.os }}-build-${{ inputs.anchor-version }}
+        path: ~/.cargo/bin/anchor
+        key: anchor-cli-${{ runner.os }}-${{ inputs.anchor-version }}
     - name: Install Linux build dependencies
       if: runner.os == 'Linux' && steps.cache-anchor-cli.outputs.cache-hit != 'true'
       run: |
@@ -68,16 +67,9 @@ runs:
         sudo apt-get install -y build-essential pkg-config libudev-dev libssl-dev
       shell: bash
     - name: Install Anchor CLI
+      if: steps.cache-anchor-cli.outputs.cache-hit != 'true'
       run: cargo install --git https://github.com/solana-foundation/anchor --tag v${{ inputs.anchor-version }} anchor-cli --locked --force
       shell: bash
-      if: steps.cache-anchor-cli.outputs.cache-hit != 'true'
-    - uses: actions/cache/save@v4
-      name: Save Anchor CLI cache
-      if: steps.cache-anchor-cli.outputs.cache-hit != 'true'
-      with:
-        path: |
-          ~/.cargo/bin/anchor
-        key: anchor-cli-${{ runner.os }}-build-${{ inputs.anchor-version }}
     - name: Install yarn
       run: npm i -g yarn
       shell: bash
