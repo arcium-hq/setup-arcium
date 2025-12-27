@@ -12,12 +12,12 @@ echo "Checking version consistency..."
 echo ""
 
 # Extract versions from each file
-ACTION_V=$(grep 'arcium-version:' action.yaml | grep default | sed "s/.*default: '//" | sed "s/'//")
-PKG_V=$(grep '@arcium-hq/client' test_project/package.json | sed 's/.*: "//' | tr -d '",')
-CARGO_CLIENT=$(grep 'arcium-client' test_project/programs/test_project/Cargo.toml | sed 's/.*version = "//' | tr -d '"' | tr -d '}')
-CARGO_MACROS=$(grep 'arcium-macros' test_project/programs/test_project/Cargo.toml | sed 's/.*= "//' | tr -d '"')
-CARGO_ANCHOR=$(grep 'arcium-anchor' test_project/programs/test_project/Cargo.toml | sed 's/.*= "//' | tr -d '"')
-ARCIS=$(grep 'arcis-imports' test_project/encrypted-ixs/Cargo.toml | sed 's/.*= "//' | tr -d '"')
+ACTION_V=$(awk '/arcium-version:/{found=1} found && /default:/{gsub(/.*default: \047|\047.*/,""); print; exit}' action.yaml)
+PKG_V=$(grep '@arcium-hq/client' test_project/package.json | sed 's/.*: "//;s/".*//')
+CARGO_CLIENT=$(grep 'arcium-client' test_project/programs/test_project/Cargo.toml | grep -o 'version = "[^"]*"' | sed 's/version = "//;s/"//')
+CARGO_MACROS=$(grep '^arcium-macros = "' test_project/programs/test_project/Cargo.toml | sed 's/.*= "//;s/".*//')
+CARGO_ANCHOR=$(grep '^arcium-anchor = "' test_project/programs/test_project/Cargo.toml | sed 's/.*= "//;s/".*//')
+ARCIS=$(grep '^arcis-imports = "' test_project/encrypted-ixs/Cargo.toml | sed 's/.*= "//;s/".*//')
 
 echo "  action.yaml (arcium-version):     $ACTION_V"
 echo "  package.json (@arcium-hq/client): $PKG_V"
