@@ -61,12 +61,16 @@ jobs:
           path: |
             test_project/build
             test_project/artifacts/circuit_hash.txt
-          key: encrypted-ixs-${{ runner.os }}-${{ hashFiles('test_project/encrypted-ixs/**') }}      
+          key: encrypted-ixs-${{ runner.os }}-${{ hashFiles('test_project/encrypted-ixs/**') }}
+      - name: Setup tmp directories
+        run: |
+          rm -rf /tmp/computation_folder_0 /tmp/computation_folder_1 /tmp/computation_folder_2 /tmp/vault
+          mkdir -p /tmp/vault /tmp/computation_folder_0 /tmp/computation_folder_1 /tmp/computation_folder_2
+        shell: bash
       - name: Build arcium project
         working-directory: test_project
         run: arcium build
         shell: bash
-        if: steps.cache-encrypted-ixs.outputs.cache-hit != 'true' && steps.cache-cargo-target.outputs.cache-hit != 'true'
       - name: Test arcium project
         working-directory: test_project
         run: arcium test
