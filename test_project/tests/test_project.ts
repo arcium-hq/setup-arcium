@@ -69,6 +69,14 @@ describe("TestProject", () => {
   it("Is initialized!", async () => {
     const owner = readKpJson(`${os.homedir()}/.config/solana/id.json`);
 
+    // Wait for MXE account to be initialized by arcium nodes before using it
+    const mxePublicKey = await getMXEPublicKeyWithRetry(
+      provider as anchor.AnchorProvider,
+      program.programId,
+    );
+
+    console.log("MXE x25519 pubkey is", mxePublicKey);
+
     console.log("Initializing add together computation definition");
     const initATSig = await initAddTogetherCompDef(
       program,
@@ -80,13 +88,6 @@ describe("TestProject", () => {
       "Add together computation definition initialized with signature",
       initATSig,
     );
-
-    const mxePublicKey = await getMXEPublicKeyWithRetry(
-      provider as anchor.AnchorProvider,
-      program.programId,
-    );
-
-    console.log("MXE x25519 pubkey is", mxePublicKey);
 
     const privateKey = x25519.utils.randomSecretKey();
     const publicKey = x25519.getPublicKey(privateKey);
