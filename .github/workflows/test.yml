@@ -10,7 +10,7 @@ on:
 
 jobs:
   test-action:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,9 +43,8 @@ jobs:
   
       - name: Install ts deps
         working-directory: test_project
-        run: yarn
+        run: yarn install
         shell: bash
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
 
       - name: Cache cargo target
         uses: actions/cache@v4
@@ -73,5 +72,13 @@ jobs:
         shell: bash
       - name: Test arcium project
         working-directory: test_project
-        run: arcium test
+        run: |
+          timeout 10m arcium test || EXIT_CODE=$?
+          echo "=== Docker Containers ==="
+          docker ps -a || true
+          echo "=== Docker Compose Logs ==="
+          docker compose -f artifacts/docker-compose-arx-env.yml logs || true
+          if [ -n "$EXIT_CODE" ]; then
+            exit $EXIT_CODE
+          fi
         shell: bash
