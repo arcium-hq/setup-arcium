@@ -39,7 +39,7 @@ jobs:
         with:
           path: |
             test_project/node_modules
-          key: node-modules-${{ runner.os }}
+          key: node-modules-${{ runner.os }}-${{ hashFiles('test_project/yarn.lock') }}
   
       - name: Install ts deps
         working-directory: test_project
@@ -78,6 +78,8 @@ jobs:
           docker ps -a || true
           echo "=== Docker Compose Logs ==="
           docker compose -f artifacts/docker-compose-arx-env.yml logs || true
+          echo "=== Callback Server Log ==="
+          cat artifacts/callback_server.log 2>/dev/null || echo "(no callback_server.log)"
           if [ -n "$EXIT_CODE" ]; then
             exit $EXIT_CODE
           fi

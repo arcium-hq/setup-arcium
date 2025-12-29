@@ -19,6 +19,14 @@ CARGO_MACROS=$(grep '^arcium-macros = "' test_project/programs/test_project/Carg
 CARGO_ANCHOR=$(grep '^arcium-anchor = "' test_project/programs/test_project/Cargo.toml | sed 's/.*= "//;s/".*//')
 ARCIS=$(grep '^arcis-imports = "' test_project/encrypted-ixs/Cargo.toml | sed 's/.*= "//;s/".*//')
 
+# Validate all version extractions succeeded
+for var in ACTION_V PKG_V CARGO_CLIENT CARGO_MACROS CARGO_ANCHOR ARCIS; do
+  if [ -z "${!var}" ]; then
+    echo "::error::Failed to extract $var version - check file format"
+    exit 1
+  fi
+done
+
 echo "  action.yaml (arcium-version):     $ACTION_V"
 echo "  package.json (@arcium-hq/client): $PKG_V"
 echo "  Cargo.toml (arcium-client):       $CARGO_CLIENT"
