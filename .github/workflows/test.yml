@@ -2,15 +2,26 @@ name: Test Setup Arcium Action
 
 on:
   push:
+    branches:
+      - main
+      - 'v*.*.*'
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test-action:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate version consistency
+        run: ./scripts/validate-versions.sh
+        shell: bash
 
       - name: Use local action
         uses: ./
@@ -32,13 +43,14 @@ jobs:
         with:
           path: |
             test_project/node_modules
-          key: node-modules-${{ runner.os }}
+          key: node-modules-${{ runner.os }}-${{ hashFiles('test_project/yarn.lock') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
   
       - name: Install ts deps
         working-directory: test_project
-        run: yarn
+        run: yarn install --frozen-lockfile
         shell: bash
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
 
       - name: Cache cargo target
         uses: actions/cache@v4
@@ -46,21 +58,37 @@ jobs:
         with:
           path: |
             test_project/target
-          key: cargo-target-${{ runner.os }}
-      - name: Cache encrypted-ixs target
+          key: cargo-target-${{ runner.os }}-${{ hashFiles('test_project/Cargo.lock') }}
+          restore-keys: |
+            cargo-target-${{ runner.os }}-
+      - name: Cache encrypted-ixs build
         uses: actions/cache@v4
-        id: cache-encrypted-ixs-target
+        id: cache-encrypted-ixs
         with:
           path: |
-              test_project/build
-              test_project/artifacts/circuit_hash.txt
-          key: cargo-target-${{ runner.os }}      
+            test_project/build
+            test_project/artifacts/circuit_hash.txt
+          key: encrypted-ixs-${{ runner.os }}-${{ hashFiles('test_project/encrypted-ixs/**') }}
+      - name: Setup tmp directories
+        run: |
+          rm -rf /tmp/computation_folder_0 /tmp/computation_folder_1 /tmp/computation_folder_2 /tmp/vault
+          mkdir -p /tmp/vault /tmp/computation_folder_0 /tmp/computation_folder_1 /tmp/computation_folder_2
+        shell: bash
       - name: Build arcium project
         working-directory: test_project
         run: arcium build
         shell: bash
-        if: steps.cache-encrypted-ixs-target.outputs.cache-hit != 'true' && steps.cache-cargo-target.outputs.cache-hit != 'true'
       - name: Test arcium project
         working-directory: test_project
-        run: arcium test
+        run: |
+          timeout 10m arcium test || EXIT_CODE=$?
+          echo "=== Docker Containers ==="
+          docker ps -a || true
+          echo "=== Docker Compose Logs ==="
+          docker compose -f artifacts/docker-compose-arx-env.yml logs || true
+          echo "=== Callback Server Log ==="
+          cat artifacts/callback_server.log 2>/dev/null || echo "(no callback_server.log)"
+          if [ -n "$EXIT_CODE" ]; then
+            exit $EXIT_CODE
+          fi
         shell: bash

@@ -1,0 +1,107 @@
+name: Auto Release
+
+on:
+  workflow_run:
+    workflows: ["Test Setup Arcium Action"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Fetch tags
+        run: git fetch --tags origin
+
+      - name: Detect version from PR branch
+        id: version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COMMIT_SHA=$(git rev-parse HEAD)
+          echo "Commit SHA: $COMMIT_SHA"
+
+          # Method 1: Query GitHub API for PR that merged this commit
+          # Works regardless of merge strategy (merge commit, squash, rebase)
+          PR_INFO=$(gh api "/repos/${GITHUB_REPOSITORY}/commits/${COMMIT_SHA}/pulls" \
+            --jq '.[0].head.ref // empty' 2>/dev/null || true)
+
+          if [ -n "$PR_INFO" ]; then
+            echo "PR head branch: $PR_INFO"
+            VERSION=$(echo "$PR_INFO" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' || true)
+          fi
+
+          # Method 2: Fallback to commit message (for direct pushes)
+          if [ -z "$VERSION" ]; then
+            COMMIT_MSG=$(git log --format=%B -n 1 HEAD)
+            echo "Commit message: $COMMIT_MSG"
+            VERSION=$(echo "$COMMIT_MSG" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)
+          fi
+
+          if [ -z "$VERSION" ]; then
+            echo "No version pattern found"
+            echo "found=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Cross-validate detected version matches action.yaml
+          EXPECTED=$(awk '/arcium-version:/{found=1} found && /default:/{gsub(/.*default: \047|\047.*/,""); print; exit}' action.yaml)
+          if [ "${VERSION#v}" != "$EXPECTED" ]; then
+            echo "::error::Version mismatch: detected $VERSION but action.yaml has $EXPECTED"
+            echo "found=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Detected version: $VERSION"
+          echo "tag=$VERSION" >> $GITHUB_OUTPUT
+          echo "found=true" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        if: steps.version.outputs.found == 'true'
+        id: check
+        run: |
+          if git rev-parse "refs/tags/${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "Tag ${{ steps.version.outputs.tag }} already exists"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Tag ${{ steps.version.outputs.tag }} does not exist"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        if: steps.version.outputs.found == 'true' && steps.check.outputs.exists == 'false'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            --repo="$GITHUB_REPOSITORY" \
+            --title="${{ steps.version.outputs.tag }}" \
+            --generate-notes
+
+      - name: Update major version tag (v1+ only)
+        if: steps.version.outputs.found == 'true' && steps.check.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.version.outputs.tag }}"
+          MAJOR=$(echo "${VERSION#v}" | cut -d. -f1)
+
+          if [ "$MAJOR" != "0" ]; then
+            echo "Updating v$MAJOR tag"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -fa "v$MAJOR" -m "Update v$MAJOR to $VERSION"
+            git push origin "v$MAJOR" --force
+          fi
