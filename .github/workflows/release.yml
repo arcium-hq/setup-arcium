@@ -58,6 +58,14 @@ jobs:
             exit 0
           fi
 
+          # Cross-validate detected version matches action.yaml
+          EXPECTED=$(awk '/arcium-version:/{found=1} found && /default:/{gsub(/.*default: \047|\047.*/,""); print; exit}' action.yaml)
+          if [ "${VERSION#v}" != "$EXPECTED" ]; then
+            echo "::error::Version mismatch: detected $VERSION but action.yaml has $EXPECTED"
+            echo "found=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
           echo "Detected version: $VERSION"
           echo "tag=$VERSION" >> $GITHUB_OUTPUT
           echo "found=true" >> $GITHUB_OUTPUT

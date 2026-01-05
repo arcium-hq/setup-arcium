@@ -2,7 +2,7 @@
 # sync-version.sh - Update all Arcium version references across the project
 # Usage: ./scripts/sync-version.sh 0.5.4
 
-set -e
+set -eo pipefail
 
 VERSION=$1
 

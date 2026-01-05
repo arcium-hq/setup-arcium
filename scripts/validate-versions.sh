@@ -2,7 +2,7 @@
 # validate-versions.sh - Validate that all Arcium version references are consistent
 # Used in CI to catch version mismatches before merge
 
-set -e
+set -eo pipefail
 
 # Get the repo root (parent of scripts directory)
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"

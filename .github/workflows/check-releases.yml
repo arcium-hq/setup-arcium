@@ -21,7 +21,14 @@ jobs:
         id: check
         run: |
           # Use newest_version (not max_version) to skip alpha/pre-releases
-          LATEST=$(curl -s https://crates.io/api/v1/crates/arcium-anchor | jq -r '.crate.newest_version')
+          LATEST=$(curl -sf https://crates.io/api/v1/crates/arcium-anchor | jq -r '.crate.newest_version')
+
+          # Validate version format from external API
+          if [ -z "$LATEST" ] || ! [[ "$LATEST" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid or empty version from crates.io: '$LATEST'"
+            exit 1
+          fi
+
           CURRENT=$(awk '/arcium-version:/{found=1} found && /default:/{gsub(/.*default: \047|\047.*/,""); print; exit}' action.yaml)
 
           echo "Latest on crates.io: $LATEST"
@@ -63,10 +70,9 @@ jobs:
           git commit -m "chore: bump arcium to v$NEW_VERSION"
           git push -u origin "$BRANCH"
 
-          # Create PR with reviewer
+          # Create PR
           gh pr create \
             --title "Update Arcium to v$NEW_VERSION" \
-            --reviewer arihantbansal \
             --body "## Automated Update
 
           This PR was automatically created because a new Arcium version was detected on crates.io.

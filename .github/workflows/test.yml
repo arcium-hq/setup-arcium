@@ -8,6 +8,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test-action:
     runs-on: ubuntu-24.04
@@ -40,10 +44,12 @@ jobs:
           path: |
             test_project/node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('test_project/yarn.lock') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
   
       - name: Install ts deps
         working-directory: test_project
-        run: yarn install
+        run: yarn install --frozen-lockfile
         shell: bash
 
       - name: Cache cargo target
@@ -53,6 +59,8 @@ jobs:
           path: |
             test_project/target
           key: cargo-target-${{ runner.os }}-${{ hashFiles('test_project/Cargo.lock') }}
+          restore-keys: |
+            cargo-target-${{ runner.os }}-
       - name: Cache encrypted-ixs build
         uses: actions/cache@v4
         id: cache-encrypted-ixs
