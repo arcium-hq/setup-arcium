@@ -3,7 +3,7 @@ use arcium_anchor::prelude::*;
 
 const COMP_DEF_OFFSET_ADD_TOGETHER: u32 = comp_def_offset("add_together");
 
-declare_id!("9cSvTSu4urEyvsb8niP7vF44kPRW2hobY6MB6r9cUZiD");
+declare_id!("vZ2UZmdMAbgxwAKGdwWNoJf4Lpemc34hZaBVXYLYeE6");
 
 #[arcium_program]
 pub mod test_project {
@@ -38,7 +38,7 @@ pub mod test_project {
             vec![AddTogetherCallback::callback_ix(
                 computation_offset,
                 &ctx.accounts.mxe_account,
-                &[],
+                &[]
             )?],
             1,
             0,
@@ -51,10 +51,7 @@ pub mod test_project {
         ctx: Context<AddTogetherCallback>,
         output: SignedComputationOutputs<AddTogetherOutput>,
     ) -> Result<()> {
-        let o = match output.verify_output(
-            &ctx.accounts.cluster_account,
-            &ctx.accounts.computation_account,
-        ) {
+        let o = match output.verify_output(&ctx.accounts.cluster_account, &ctx.accounts.computation_account) {
             Ok(AddTogetherOutput { field_0 }) => field_0,
             Err(_) => return Err(ErrorCode::AbortedComputation.into()),
         };
@@ -119,6 +116,7 @@ pub struct AddTogether<'info> {
     )]
     pub pool_account: Account<'info, FeePool>,
     #[account(
+        mut,
         address = ARCIUM_CLOCK_ACCOUNT_ADDRESS
     )]
     pub clock_account: Account<'info, ClockAccount>,

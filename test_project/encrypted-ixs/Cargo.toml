@@ -5,3 +5,4 @@ edition = "2021"
 
 [dependencies]
 arcis = "0.6.2"
+blake3 = "=1.8.2"

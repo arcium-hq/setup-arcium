@@ -26,21 +26,6 @@ import * as fs from "fs";
 import * as os from "os";
 import { expect } from "chai";
 
-// Cluster configuration
-// For localnet testing: null (uses ARCIUM_CLUSTER_PUBKEY from env)
-// For devnet/testnet: specific cluster offset
-const CLUSTER_OFFSET: number | null = null;
-
-/**
- * Gets the cluster account address based on configuration.
- * - If CLUSTER_OFFSET is set: Uses getClusterAccAddress (devnet/testnet)
- * - If null: Uses getArciumEnv().arciumClusterOffset (localnet)
- */
-function getClusterAccount(): PublicKey {
-  const offset = CLUSTER_OFFSET ?? getArciumEnv().arciumClusterOffset;
-  return getClusterAccAddress(offset);
-}
-
 describe("TestProject", () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
@@ -64,18 +49,10 @@ describe("TestProject", () => {
   };
 
   const arciumEnv = getArciumEnv();
-  const clusterAccount = getClusterAccount();
+  const clusterAccount = getClusterAccAddress(arciumEnv.arciumClusterOffset);
 
   it("Is initialized!", async () => {
     const owner = readKpJson(`${os.homedir()}/.config/solana/id.json`);
-
-    // Wait for MXE account to be initialized by arcium nodes before using it
-    const mxePublicKey = await getMXEPublicKeyWithRetry(
-      provider as anchor.AnchorProvider,
-      program.programId,
-    );
-
-    console.log("MXE x25519 pubkey is", mxePublicKey);
 
     console.log("Initializing add together computation definition");
     const initATSig = await initAddTogetherCompDef(
@@ -88,6 +65,13 @@ describe("TestProject", () => {
       "Add together computation definition initialized with signature",
       initATSig,
     );
+
+    const mxePublicKey = await getMXEPublicKeyWithRetry(
+      provider as anchor.AnchorProvider,
+      program.programId,
+    );
+
+    console.log("MXE x25519 pubkey is", mxePublicKey);
 
     const privateKey = x25519.utils.randomSecretKey();
     const publicKey = x25519.getPublicKey(privateKey);
