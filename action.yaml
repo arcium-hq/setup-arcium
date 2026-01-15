@@ -1,30 +1,30 @@
-name: 'Setup Arcium'
-description: 'Install Arcium, Anchor, Solana CLI tools, Node.js, and Docker.'
+name: "Setup Arcium"
+description: "Install Arcium, Anchor, Solana CLI tools, Node.js, and Docker."
 branding:
   icon: play
   color: purple
 inputs:
   node-version:
-    description: 'Version of node.js to use'
+    description: "Version of node.js to use"
     required: false
-    default: '20.18.0'
+    default: "20.18.0"
   solana-cli-version:
-    description: 'Version of Solana CLI to use. Must be greater than 2.0'
+    description: "Version of Solana CLI to use. Must be greater than 2.0"
     required: false
-    default: '2.3.0'
+    default: "2.3.0"
   anchor-version:
-    description: 'Version of Anchor to use'
+    description: "Version of Anchor to use"
     required: false
-    default: '0.32.1'
+    default: "0.32.1"
   arcium-version:
-    description: 'Version of Arcium to use'
+    description: "Version of Arcium to use"
     required: false
-    default: '0.5.4'
+    default: '0.6.2'
   runner-arch-os:
-    description: 'Architecture and operating system of the runner. Options: x86_64_linux, aarch64_macos'
+    description: "Architecture and operating system of the runner. Options: x86_64_linux, aarch64_macos"
     required: true
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - uses: actions/setup-node@v4
       with:
@@ -75,7 +75,7 @@ runs:
       shell: bash
     - name: Install Arcup
       run: |
-        curl "https://bin.arcium.com/download/arcup_${{ inputs.runner-arch-os }}_${{ inputs.arcium-version }}" -o ~/.cargo/bin/arcup 
+        curl "https://bin.arcium.com/download/arcup_${{ inputs.runner-arch-os }}_${{ inputs.arcium-version }}" -o ~/.cargo/bin/arcup
         chmod +x ~/.cargo/bin/arcup
       shell: bash
     - name: Install Arcium
