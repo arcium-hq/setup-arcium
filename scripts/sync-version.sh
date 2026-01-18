@@ -1,6 +1,6 @@
 #!/bin/bash
 # sync-version.sh - Update all Arcium version references across the project
-# Usage: ./scripts/sync-version.sh 0.5.4
+# Usage: ./scripts/sync-version.sh 0.6.3
 
 set -eo pipefail
 
@@ -8,13 +8,13 @@ VERSION=$1
 
 if [ -z "$VERSION" ]; then
   echo "Usage: ./scripts/sync-version.sh <version>"
-  echo "Example: ./scripts/sync-version.sh 0.5.4"
+  echo "Example: ./scripts/sync-version.sh 0.6.3"
   exit 1
 fi
 
 # Validate version format
 if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-  echo "Error: Version must be in format X.Y.Z (e.g., 0.5.4)"
+  echo "Error: Version must be in format X.Y.Z (e.g., 0.6.3)"
   exit 1
 fi
 
@@ -55,13 +55,8 @@ rm -f test_project/programs/test_project/Cargo.toml.bak
 
 # Update test_project/encrypted-ixs/Cargo.toml
 echo "Updating test_project/encrypted-ixs/Cargo.toml..."
-sed -i.bak 's/arcis-imports = "[^"]*"/arcis-imports = "'"$VERSION"'"/' test_project/encrypted-ixs/Cargo.toml
+sed -i.bak 's/arcis = "[^"]*"/arcis = "'"$VERSION"'"/' test_project/encrypted-ixs/Cargo.toml
 rm -f test_project/encrypted-ixs/Cargo.toml.bak
-
-# Update CLAUDE.md
-echo "Updating CLAUDE.md..."
-sed -i.bak 's/`arcium-version` | No | `[^`]*`/`arcium-version` | No | `'"$VERSION"'`/' CLAUDE.md
-rm -f CLAUDE.md.bak
 
 # Regenerate lock files
 echo ""

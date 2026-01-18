@@ -17,7 +17,7 @@ PKG_V=$(grep '@arcium-hq/client' test_project/package.json | sed 's/.*: "//;s/".
 CARGO_CLIENT=$(grep 'arcium-client' test_project/programs/test_project/Cargo.toml | grep -o 'version = "[^"]*"' | sed 's/version = "//;s/"//')
 CARGO_MACROS=$(grep '^arcium-macros = "' test_project/programs/test_project/Cargo.toml | sed 's/.*= "//;s/".*//')
 CARGO_ANCHOR=$(grep '^arcium-anchor = "' test_project/programs/test_project/Cargo.toml | sed 's/.*= "//;s/".*//')
-ARCIS=$(grep '^arcis-imports = "' test_project/encrypted-ixs/Cargo.toml | sed 's/.*= "//;s/".*//')
+ARCIS=$(grep '^arcis = "' test_project/encrypted-ixs/Cargo.toml | sed 's/.*= "//;s/".*//')
 
 # Validate all version extractions succeeded
 for var in ACTION_V PKG_V CARGO_CLIENT CARGO_MACROS CARGO_ANCHOR ARCIS; do
@@ -32,7 +32,7 @@ echo "  package.json (@arcium-hq/client): $PKG_V"
 echo "  Cargo.toml (arcium-client):       $CARGO_CLIENT"
 echo "  Cargo.toml (arcium-macros):       $CARGO_MACROS"
 echo "  Cargo.toml (arcium-anchor):       $CARGO_ANCHOR"
-echo "  Cargo.toml (arcis-imports):       $ARCIS"
+echo "  Cargo.toml (arcis):       $ARCIS"
 echo ""
 
 ERRORS=0
@@ -60,7 +60,7 @@ if [ "$ACTION_V" != "$CARGO_ANCHOR" ]; then
 fi
 
 if [ "$ACTION_V" != "$ARCIS" ]; then
-  echo "::error::Version mismatch: action.yaml ($ACTION_V) != arcis-imports ($ARCIS)"
+  echo "::error::Version mismatch: action.yaml ($ACTION_V) != arcis ($ARCIS)"
   ERRORS=$((ERRORS+1))
 fi
 

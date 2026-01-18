@@ -10,11 +10,11 @@ When working with plaintext data, we can edit it inside our program as normal. W
 ```rust
 // encrypted-ixs/add_together.rs
 
-use arcis_imports::*;
+use arcis::*;
 
 #[encrypted]
 mod circuits {
-    use arcis_imports::*;
+    use arcis::*;
 
     pub struct InputValues {
         v1: u8,
