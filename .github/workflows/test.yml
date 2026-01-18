@@ -88,6 +88,10 @@ jobs:
           docker compose -f artifacts/docker-compose-arx-env.yml logs || true
           echo "=== Callback Server Log ==="
           cat artifacts/callback_server.log 2>/dev/null || echo "(no callback_server.log)"
+          echo "=== Solana Test Validator Log ==="
+          cat .anchor/test-ledger/validator.log 2>/dev/null | tail -100 || echo "(no validator.log)"
+          echo "=== Anchor Localnet Log ==="
+          ls -la .anchor/ 2>/dev/null || echo "(no .anchor dir)"
           if [ -n "$EXIT_CODE" ]; then
             exit $EXIT_CODE
           fi
