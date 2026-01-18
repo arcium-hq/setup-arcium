@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@arcium-hq/client@0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@arcium-hq/client/-/client-0.6.2.tgz#55c3dacc50c0bf9f4dbf3897fa617e3cc3a573a2"
+"@arcium-hq/client@0.6.3":
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/@arcium-hq/client/-/client-0.6.3.tgz#55c3dacc50c0bf9f4dbf3897fa617e3cc3a573a2"
   integrity sha512-nl5LVbF8eZBMgkXaSPEWCNCybH4N1Nr6tE84mSzt8hWsm4XCv8BhePrO+YnbF3aWB033KhGO+vAFbpnPLJbWvA==
   dependencies:
     "@coral-xyz/anchor" "0.32.1"

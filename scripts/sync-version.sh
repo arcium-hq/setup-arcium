@@ -1,6 +1,6 @@
 #!/bin/bash
 # sync-version.sh - Update all Arcium version references across the project
-# Usage: ./scripts/sync-version.sh 0.6.2
+# Usage: ./scripts/sync-version.sh 0.6.3
 
 set -eo pipefail
 
@@ -8,13 +8,13 @@ VERSION=$1
 
 if [ -z "$VERSION" ]; then
   echo "Usage: ./scripts/sync-version.sh <version>"
-  echo "Example: ./scripts/sync-version.sh 0.6.2"
+  echo "Example: ./scripts/sync-version.sh 0.6.3"
   exit 1
 fi
 
 # Validate version format
 if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-  echo "Error: Version must be in format X.Y.Z (e.g., 0.6.2)"
+  echo "Error: Version must be in format X.Y.Z (e.g., 0.6.3)"
   exit 1
 fi
 

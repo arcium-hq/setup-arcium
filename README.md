@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: arcium-hq/setup-arcium@v0.6.2
+      - uses: arcium-hq/setup-arcium@v0.6.3
         with:
           runner-arch-os: x86_64_linux
       - run: arcium build
@@ -23,7 +23,7 @@ jobs:
 
 This will use the default versions:
 
-- Arcium: 0.6.2
+- Arcium: 0.6.3
 - Anchor: 0.32.1
 - Node.js: 20.18.0
 - Solana CLI: 2.3.0
@@ -35,9 +35,9 @@ The `runner-arch-os` parameter is required. Options: `x86_64_linux`, `aarch64_ma
 ```yaml
 steps:
   - uses: actions/checkout@v4
-  - uses: arcium-hq/setup-arcium@v0.6.2
+  - uses: arcium-hq/setup-arcium@v0.6.3
     with:
-      arcium-version: "0.6.2"
+      arcium-version: "0.6.3"
       anchor-version: "0.32.1"
       solana-cli-version: "2.3.0"
       node-version: "20.18.0"
@@ -56,16 +56,16 @@ To manually update to a new Arcium version:
 
 ```bash
 # Update all version references and regenerate lock files
-./scripts/sync-version.sh 0.6.2
+./scripts/sync-version.sh 0.6.3
 
 # Create release branch
-git checkout -b v0.6.2
+git checkout -b v0.6.3
 git add -A
-git commit -m "chore: bump arcium to v0.6.2"
-git push -u origin v0.6.2
+git commit -m "chore: bump arcium to v0.6.3"
+git push -u origin v0.6.3
 
 # Create PR - after merge, auto-release creates GitHub release
-gh pr create --title "Release v0.6.2" --body "Update Arcium to v0.6.2"
+gh pr create --title "Release v0.6.3" --body "Update Arcium to v0.6.3"
 ```
 
 ### Version Validation
