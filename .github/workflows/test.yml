@@ -81,8 +81,6 @@ jobs:
       - name: Test arcium project
         working-directory: test_project
         run: |
-          # Increase file descriptor limit to prevent solana-test-validator "Too many open files" error
-          sudo prlimit --pid $$ --nofile=1048576:1048576
           timeout 10m arcium test || EXIT_CODE=$?
           echo "=== Docker Containers ==="
           docker ps -a || true
