@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - 'v*.*.*'
+      - "v*.*.*"
   pull_request:
   workflow_dispatch:
 
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Validate version consistency
         run: ./scripts/validate-versions.sh
@@ -38,7 +38,7 @@ jobs:
         shell: bash
 
       - name: Cache node_modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: cache-node-modules
         with:
           path: |
@@ -46,14 +46,14 @@ jobs:
           key: node-modules-${{ runner.os }}-${{ hashFiles('test_project/yarn.lock') }}
           restore-keys: |
             node-modules-${{ runner.os }}-
-  
+
       - name: Install ts deps
         working-directory: test_project
         run: yarn install --frozen-lockfile
         shell: bash
 
       - name: Cache cargo target
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: cache-cargo-target
         with:
           path: |
@@ -62,7 +62,7 @@ jobs:
           restore-keys: |
             cargo-target-${{ runner.os }}-
       - name: Cache encrypted-ixs build
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: cache-encrypted-ixs
         with:
           path: |
