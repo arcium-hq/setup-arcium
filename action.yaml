@@ -19,7 +19,7 @@ inputs:
   arcium-version:
     description: "Version of Arcium to use"
     required: false
-    default: '0.6.3'
+    default: "0.6.3"
   runner-arch-os:
     description: "Architecture and operating system of the runner. Options: x86_64_linux, aarch64_macos"
     required: true
