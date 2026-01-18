@@ -48,14 +48,14 @@ fi
 
 # Update test_project/programs/test_project/Cargo.toml
 echo "Updating test_project/programs/test_project/Cargo.toml..."
-sed -i.bak 's/arcium-client = { default-features = false, version = "[^"]*"/arcium-client = { default-features = false, version = "'"$VERSION"'"/' test_project/programs/test_project/Cargo.toml
-sed -i.bak 's/arcium-macros = "[^"]*"/arcium-macros = "'"$VERSION"'"/' test_project/programs/test_project/Cargo.toml
-sed -i.bak 's/arcium-anchor = "[^"]*"/arcium-anchor = "'"$VERSION"'"/' test_project/programs/test_project/Cargo.toml
+sed -i.bak 's/arcium-client = { default-features = false, version = "[^"]*"/arcium-client = { default-features = false, version = "='"$VERSION"'"/' test_project/programs/test_project/Cargo.toml
+sed -i.bak 's/arcium-macros = "[^"]*"/arcium-macros = "='"$VERSION"'"/' test_project/programs/test_project/Cargo.toml
+sed -i.bak 's/arcium-anchor = "[^"]*"/arcium-anchor = "='"$VERSION"'"/' test_project/programs/test_project/Cargo.toml
 rm -f test_project/programs/test_project/Cargo.toml.bak
 
 # Update test_project/encrypted-ixs/Cargo.toml
 echo "Updating test_project/encrypted-ixs/Cargo.toml..."
-sed -i.bak 's/arcis = "[^"]*"/arcis = "'"$VERSION"'"/' test_project/encrypted-ixs/Cargo.toml
+sed -i.bak 's/arcis = "[^"]*"/arcis = "='"$VERSION"'"/' test_project/encrypted-ixs/Cargo.toml
 rm -f test_project/encrypted-ixs/Cargo.toml.bak
 
 # Regenerate lock files
