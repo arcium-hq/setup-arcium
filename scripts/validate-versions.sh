@@ -12,7 +12,7 @@ echo "Checking version consistency..."
 echo ""
 
 # Extract versions from each file
-ACTION_V=$(awk '/arcium-version:/{found=1} found && /default:/{gsub(/.*default: \047|\047.*/,""); print; exit}' action.yaml)
+ACTION_V=$(awk '/arcium-version:/{found=1} found && /default:/{gsub(/.*default: ["'"'"']|["'"'"'].*/,""); print; exit}' action.yaml)
 PKG_V=$(grep '@arcium-hq/client' test_project/package.json | sed 's/.*: "//;s/".*//')
 CARGO_CLIENT=$(grep 'arcium-client' test_project/programs/test_project/Cargo.toml | grep -o 'version = "[^"]*"' | sed 's/version = "//;s/"//;s/^=//')
 CARGO_MACROS=$(grep '^arcium-macros = "' test_project/programs/test_project/Cargo.toml | sed 's/.*= "//;s/".*//;s/^=//')
