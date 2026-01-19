@@ -23,10 +23,6 @@ inputs:
   runner-arch-os:
     description: "Architecture and operating system of the runner. Options: x86_64_linux, aarch64_macos"
     required: true
-  increase-file-descriptors:
-    description: "Increase file descriptor limit on Linux to prevent 'Too many open files' errors with solana-test-validator"
-    required: false
-    default: "true"
 runs:
   using: "composite"
   steps:
@@ -85,8 +81,4 @@ runs:
     - name: Install Arcium
       run: |
         arcup install ${{ inputs.arcium-version }}
-      shell: bash
-    - name: Increase file descriptor limit
-      if: runner.os == 'Linux' && inputs.increase-file-descriptors == 'true'
-      run: sudo prlimit --pid $$ --nofile=1048576:1048576
       shell: bash
