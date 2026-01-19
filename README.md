@@ -44,6 +44,20 @@ steps:
       runner-arch-os: x86_64_linux
 ```
 
+### Running Tests on Linux
+
+When running `arcium test` on Linux CI, you must increase the file descriptor limit in the same shell to prevent `Too many open files` errors from solana-test-validator:
+
+```yaml
+- name: Test
+  run: |
+    sudo prlimit --pid $$ --nofile=1048576:1048576
+    arcium test
+  shell: bash
+```
+
+> **Note:** This is required because each GitHub Actions step runs in a separate shell. A future arcium CLI version will handle this automatically.
+
 ## Updating to New Arcium Versions
 
 ### Automated Detection
