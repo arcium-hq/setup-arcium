@@ -20,7 +20,7 @@ import {
   getExecutingPoolAccAddress,
   getComputationAccAddress,
   getClusterAccAddress,
-  getMXELutAccAddress,
+  getLookupTableAddress,
   LUT_PROGRAM_ID,
   x25519,
 } from "@arcium-hq/client";
@@ -155,7 +155,7 @@ describe("TestProject", () => {
         compDefAccount: compDefPDA,
         payer: owner.publicKey,
         mxeAccount: getMXEAccAddress(program.programId),
-        addressLookupTable: getMXELutAccAddress(program.programId),
+        addressLookupTable: getLookupTableAddress(program.programId),
         lutProgram: LUT_PROGRAM_ID,
       })
       .signers([owner])
