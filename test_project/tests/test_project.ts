@@ -10,7 +10,6 @@ import {
   getArciumAccountBaseSeed,
   getArciumProgramId,
   uploadCircuit,
-  buildFinalizeCompDefTx,
   RescueCipher,
   deserializeLE,
   getMXEPublicKey,
@@ -21,7 +20,6 @@ import {
   getComputationAccAddress,
   getClusterAccAddress,
   getLookupTableAddress,
-  LUT_PROGRAM_ID,
   x25519,
 } from "@arcium-hq/client";
 import * as fs from "fs";
@@ -56,12 +54,7 @@ describe("TestProject", () => {
     const owner = readKpJson(`${os.homedir()}/.config/solana/id.json`);
 
     console.log("Initializing add together computation definition");
-    const initATSig = await initAddTogetherCompDef(
-      program,
-      owner,
-      false,
-      false
-    );
+    const initATSig = await initAddTogetherCompDef(program, owner);
     console.log(
       "Add together computation definition initialized with signature",
       initATSig
@@ -132,9 +125,7 @@ describe("TestProject", () => {
 
   async function initAddTogetherCompDef(
     program: Program<TestProject>,
-    owner: anchor.web3.Keypair,
-    uploadRawCircuit: boolean,
-    offchainSource: boolean
+    owner: anchor.web3.Keypair
   ): Promise<string> {
     const baseSeedCompDefAcc = getArciumAccountBaseSeed(
       "ComputationDefinitionAccount"
@@ -155,7 +146,6 @@ describe("TestProject", () => {
         payer: owner.publicKey,
         mxeAccount: getMXEAccAddress(program.programId),
         addressLookupTable: getLookupTableAddress(program.programId),
-        lutProgram: LUT_PROGRAM_ID,
       })
       .signers([owner])
       .rpc({
@@ -163,31 +153,15 @@ describe("TestProject", () => {
       });
     console.log("Init add together computation definition transaction", sig);
 
-    if (uploadRawCircuit) {
-      const rawCircuit = fs.readFileSync("build/add_together.arcis");
+    const rawCircuit = fs.readFileSync("build/add_together.arcis");
+    await uploadCircuit(
+      provider as anchor.AnchorProvider,
+      "add_together",
+      program.programId,
+      rawCircuit,
+      true
+    );
 
-      await uploadCircuit(
-        provider as anchor.AnchorProvider,
-        "add_together",
-        program.programId,
-        rawCircuit,
-        true
-      );
-    } else if (!offchainSource) {
-      const finalizeTx = await buildFinalizeCompDefTx(
-        provider as anchor.AnchorProvider,
-        Buffer.from(offset).readUInt32LE(),
-        program.programId
-      );
-
-      const latestBlockhash = await provider.connection.getLatestBlockhash();
-      finalizeTx.recentBlockhash = latestBlockhash.blockhash;
-      finalizeTx.lastValidBlockHeight = latestBlockhash.lastValidBlockHeight;
-
-      finalizeTx.sign(owner);
-
-      await provider.sendAndConfirm(finalizeTx);
-    }
     return sig;
   }
 });
