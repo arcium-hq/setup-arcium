@@ -9,6 +9,7 @@ import {
   getCompDefAccOffset,
   getArciumAccountBaseSeed,
   getArciumProgramId,
+  getArciumProgram,
   uploadCircuit,
   RescueCipher,
   deserializeLE,
@@ -139,13 +140,24 @@ describe("TestProject", () => {
 
     console.log("Comp def pda is ", compDefPDA);
 
+    // Fetch mxeAccount to get lutOffsetSlot for dynamic LUT address
+    const arciumProgram = getArciumProgram(provider as anchor.AnchorProvider);
+    const mxeAccountAddress = getMXEAccAddress(program.programId);
+    const mxeAccount = await arciumProgram.account.mxeAccount.fetch(
+      mxeAccountAddress
+    );
+    const lutAddress = getLookupTableAddress(
+      program.programId,
+      mxeAccount.lutOffsetSlot
+    );
+
     const sig = await program.methods
       .initAddTogetherCompDef()
       .accounts({
         compDefAccount: compDefPDA,
         payer: owner.publicKey,
-        mxeAccount: getMXEAccAddress(program.programId),
-        addressLookupTable: getLookupTableAddress(program.programId),
+        mxeAccount: mxeAccountAddress,
+        addressLookupTable: lutAddress,
       })
       .signers([owner])
       .rpc({
