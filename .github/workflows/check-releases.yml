@@ -1,83 +1,102 @@
-name: Check Arcium Releases
+name: Update Arcium Version
 
 on:
-  schedule:
-    - cron: '0 9 * * 1'  # Weekly on Monday 9am UTC
+  repository_dispatch:
+    types: [new-arcium-release]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Arcium version to update to (e.g., 0.9.1)"
+        required: true
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  check:
-    name: Check for new Arcium version
+  update:
+    name: Create version update PR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Check for new Arcium version
-        id: check
+      - name: Determine version
+        id: version
         run: |
-          # Use newest_version (not max_version) to skip alpha/pre-releases
-          LATEST=$(curl -sf https://crates.io/api/v1/crates/arcium-anchor | jq -r '.crate.newest_version')
+          if [ -n "$DISPATCH_VERSION" ]; then
+            VERSION="$DISPATCH_VERSION"
+          elif [ -n "$INPUT_VERSION" ]; then
+            VERSION="$INPUT_VERSION"
+          else
+            echo "::error::No version provided"
+            exit 1
+          fi
 
-          # Validate version format from external API
-          if [ -z "$LATEST" ] || ! [[ "$LATEST" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::Invalid or empty version from crates.io: '$LATEST'"
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid version format: '$VERSION'. Must be X.Y.Z"
             exit 1
           fi
 
           CURRENT=$(awk '/arcium-version:/{found=1} found && /default:/{gsub(/.*default: \047|\047.*/,""); print; exit}' action.yaml)
 
-          echo "Latest on crates.io: $LATEST"
-          echo "Current in repo: $CURRENT"
-
-          if [ "$LATEST" != "$CURRENT" ]; then
-            echo "new_version=$LATEST" >> $GITHUB_OUTPUT
-            echo "has_update=true" >> $GITHUB_OUTPUT
-          else
-            echo "has_update=false" >> $GITHUB_OUTPUT
-            echo "Already up to date"
-          fi
-        shell: bash
-
-      - name: Create update PR
-        if: steps.check.outputs.has_update == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_VERSION: ${{ steps.check.outputs.new_version }}
-        run: |
-          BRANCH="v$NEW_VERSION"
-
-          # Check if branch/PR already exists
-          if git ls-remote --heads origin "$BRANCH" | grep -q "$BRANCH"; then
-            echo "Branch $BRANCH already exists, skipping"
+          if [ "$VERSION" = "$CURRENT" ]; then
+            echo "Already at version $VERSION, skipping"
+            echo "skip=true" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          # Configure git
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "skip=false" >> $GITHUB_OUTPUT
+        env:
+          DISPATCH_VERSION: ${{ github.event.client_payload.version }}
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+
+      - name: Check if branch already exists
+        if: steps.version.outputs.skip == 'false'
+        id: check
+        run: |
+          BRANCH="v$VERSION"
+          if git ls-remote --heads origin "$BRANCH" | grep -q "$BRANCH"; then
+            echo "Branch $BRANCH already exists, skipping"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+
+      - name: Setup Node.js
+        if: steps.version.outputs.skip == 'false' && steps.check.outputs.exists == 'false'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install yarn
+        if: steps.version.outputs.skip == 'false' && steps.check.outputs.exists == 'false'
+        run: npm i -g yarn
+
+      - name: Create update PR
+        if: steps.version.outputs.skip == 'false' && steps.check.outputs.exists == 'false'
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Create branch and update versions
-          git checkout -b "$BRANCH"
-          ./scripts/sync-version.sh "$NEW_VERSION"
+          git checkout -b "v$VERSION"
+          ./scripts/sync-version.sh "$VERSION"
 
-          # Commit and push
           git add -A
-          git commit -m "chore: bump arcium to v$NEW_VERSION"
-          git push -u origin "$BRANCH"
+          git commit -m "v$VERSION"
+          git push -u origin "v$VERSION"
 
-          # Create PR
           gh pr create \
-            --title "Update Arcium to v$NEW_VERSION" \
-            --body "## Automated Update
+            --title "v$VERSION" \
+            --body "$(cat <<EOF
+          ## Automated Update
 
-          This PR was automatically created because a new Arcium version was detected on crates.io.
+          Triggered by new arcium-tooling release.
 
-          **Version:** $NEW_VERSION
+          **Version:** $VERSION
 
           ### Changes
           - Updated \`action.yaml\` default arcium-version
@@ -87,6 +106,9 @@ jobs:
 
           ### Checklist
           - [ ] CI passes
-          - [ ] Test locally if needed
-          - [ ] Merge to trigger auto-release"
-        shell: bash
+          - [ ] Merge to trigger auto-release
+          EOF
+          )"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
