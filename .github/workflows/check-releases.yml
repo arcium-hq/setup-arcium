@@ -57,7 +57,7 @@ jobs:
         id: check
         run: |
           BRANCH="v$VERSION"
-          if git ls-remote --heads origin "$BRANCH" | grep -q "$BRANCH"; then
+          if git ls-remote --exit-code --heads origin "$BRANCH" > /dev/null 2>&1; then
             echo "Branch $BRANCH already exists, skipping"
             echo "exists=true" >> $GITHUB_OUTPUT
           else
