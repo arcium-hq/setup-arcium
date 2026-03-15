@@ -320,9 +320,9 @@ checksum = "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c"
 
 [[package]]
 name = "arcis"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c1b9edf9557e19aa700a299d93e560dfd4db482e9ae21409472b3d76ee5dee29"
+checksum = "7a6e1fb96bc224b90f4ae41dc3032a6c3675601044698bacf9ca1110d354df28"
 dependencies = [
  "arcis-compiler",
  "arcis-interpreter-proc-macros",
@@ -335,9 +335,9 @@ dependencies = [
 
 [[package]]
 name = "arcis-compiler"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab0024bc5c8df5750e434e0af84b69bcea1e3defcc29d00e39a0fd127c3e48b4"
+checksum = "514122fac78afddda157382054b0bfe60e891d77b0c53c944b7955f4c15abf0a"
 dependencies = [
  "aes",
  "arcis-interface",
@@ -379,9 +379,9 @@ dependencies = [
 
 [[package]]
 name = "arcis-interface"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2970288d6b796aab37eaf89db396a0d399f56ffad4c5a5c5e9765b5d1ab1c561"
+checksum = "16c584326a554a14d1e3bc64b5d0fb43674957f9db360e3a40123f0f57bffdc9"
 dependencies = [
  "serde",
  "serde_json",
@@ -389,9 +389,9 @@ dependencies = [
 
 [[package]]
 name = "arcis-internal-expr-macro"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1f23cf964f00665862f84147b51a23daa731a6b7bef371a02ad653b36de33e08"
+checksum = "309a73fb2263555354eceed05e57e100b6e2c61e07282dad44fa34fe09472163"
 dependencies = [
  "indexmap 2.13.0",
  "proc-macro2",
@@ -402,9 +402,9 @@ dependencies = [
 
 [[package]]
 name = "arcis-interpreter"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9ebe042146431373ff2fcd72638ac69b7feb932c50226cdcccf3b7dd0ff50911"
+checksum = "6db14f25b61f034f3f17c589eb0e84d7ec38694a5eb31d9bd8b9969df7d8e6b4"
 dependencies = [
  "arcis-compiler",
  "arcis-interface",
@@ -423,18 +423,18 @@ dependencies = [
 
 [[package]]
 name = "arcis-interpreter-proc-macros"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a643ff1f53b7ef76a7622e7b1c159cf3d233da1cb120d9b4343fdb6223271205"
+checksum = "314dbc4a2b94eb5054a26da7d8b43ed8465c8c37fae61cc1d714b2e4059b5346"
 dependencies = [
  "arcis-interpreter",
 ]
 
 [[package]]
 name = "arcium-anchor"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a0cb1dac0fe5c11ad87188913c8a524eacc695cf7f25468f687bc4390ae2586e"
+checksum = "86c62f7c28d7b8d8a717d265d77f8ab82ca1496bdeb2e219644a1efabeda050c"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
@@ -447,9 +447,9 @@ dependencies = [
 
 [[package]]
 name = "arcium-client"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "34f7889deb31bce4d921a06f8909a902d3771c1d1a06349b1d796886ec78893d"
+checksum = "7ffc10664dc04f9a977c8c46945ed1c128e56ddce304542979fda1012b26f0ea"
 dependencies = [
  "anchor-lang",
  "bytemuck",
@@ -487,9 +487,9 @@ dependencies = [
 
 [[package]]
 name = "arcium-macros"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d3bec47db339214e09441374179fe5246d5d34f1640ef05f6e99b1be6febef95"
+checksum = "713781f2b0219ed5d9f8c55c557813eb980ca8345d72b47779dfd40498f9601a"
 dependencies = [
  "arcis-interface",
  "convert_case",
@@ -1132,9 +1132,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.56"
+version = "1.2.57"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aebf35691d1bfb0ac386a69bac2fde4dd276fb618cf8bf4f5318fe285e821bb2"
+checksum = "7a0dd1ca384932ff3641c8718a02769f1698e7563dc6974ffd03346116310423"
 dependencies = [
  "find-msvc-tools",
  "shlex",
@@ -1430,8 +1430,18 @@ version = "0.21.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9cdf337090841a411e2a7f3deb9187445851f91b309c0c0a29e05f74a00a48c0"
 dependencies = [
- "darling_core",
- "darling_macro",
+ "darling_core 0.21.3",
+ "darling_macro 0.21.3",
+]
+
+[[package]]
+name = "darling"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25ae13da2f202d56bd7f91c25fba009e7717a1e4a1cc98a76d844b65ae912e9d"
+dependencies = [
+ "darling_core 0.23.0",
+ "darling_macro 0.23.0",
 ]
 
 [[package]]
@@ -1449,12 +1459,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "darling_core"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9865a50f7c335f53564bb694ef660825eb8610e0a53d3e11bf1b0d3df31e03b0"
+dependencies = [
+ "ident_case",
+ "proc-macro2",
+ "quote",
+ "strsim",
+ "syn 2.0.117",
+]
+
+[[package]]
 name = "darling_macro"
 version = "0.21.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d38308df82d1080de0afee5d069fa14b0326a88c14f15c5ccda35b4a6c414c81"
 dependencies = [
- "darling_core",
+ "darling_core 0.21.3",
+ "quote",
+ "syn 2.0.117",
+]
+
+[[package]]
+name = "darling_macro"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ac3984ec7bd6cfa798e62b4a642426a5be0e68f9401cfc2a01e3fa9ea2fcdb8d"
+dependencies = [
+ "darling_core 0.23.0",
  "quote",
  "syn 2.0.117",
 ]
@@ -3276,9 +3310,9 @@ dependencies = [
 
 [[package]]
 name = "serde_with"
-version = "3.17.0"
+version = "3.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "381b283ce7bc6b476d903296fb59d0d36633652b633b27f64db4fb46dcbfc3b9"
+checksum = "dd5414fad8e6907dbdd5bc441a50ae8d6e26151a03b1de04d89a5576de61d01f"
 dependencies = [
  "base64 0.22.1",
  "chrono",
@@ -3295,11 +3329,11 @@ dependencies = [
 
 [[package]]
 name = "serde_with_macros"
-version = "3.17.0"
+version = "3.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a6d4e30573c8cb306ed6ab1dca8423eec9a463ea0e155f45399455e0368b27e0"
+checksum = "d3db8978e608f1fe7357e211969fd9abdcae80bac1ba7a3369bb7eb6b404eb65"
 dependencies = [
- "darling",
+ "darling 0.23.0",
  "proc-macro2",
  "quote",
  "syn 2.0.117",
@@ -4899,9 +4933,9 @@ dependencies = [
 
 [[package]]
 name = "tinyvec"
-version = "1.10.0"
+version = "1.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bfa5fdc3bce6191a1dbc8c02d5c8bffcf557bafa17c124c5264a458f1b0613fa"
+checksum = "3e61e67053d25a4e82c844e8424039d9745781b3fc4f32b8d55ed50f5f667ef3"
 dependencies = [
  "tinyvec_macros",
 ]
@@ -5226,7 +5260,7 @@ version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bb4575846d605c467ae77275354edcdf2abcbc074992eeca6c76a36db546200e"
 dependencies = [
- "darling",
+ "darling 0.21.3",
  "proc-macro2",
  "quote",
  "syn 2.0.117",
