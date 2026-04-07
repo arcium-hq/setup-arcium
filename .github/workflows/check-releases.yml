@@ -12,6 +12,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   update:
@@ -91,6 +92,7 @@ jobs:
 
           gh pr create \
             --title "v$VERSION" \
+            --reviewer arihantbansal \
             --body "$(cat <<EOF
           ## Automated Update
 
@@ -109,6 +111,13 @@ jobs:
           - [ ] Merge to trigger auto-release
           EOF
           )"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+
+      - name: Trigger CI on the new branch
+        if: steps.version.outputs.skip == 'false' && steps.check.outputs.exists == 'false'
+        run: gh workflow run test.yml --ref "v$VERSION"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.version.outputs.version }}
