@@ -32,6 +32,7 @@ describe("TestProject", () => {
   anchor.setProvider(anchor.AnchorProvider.env());
   const program = anchor.workspace.TestProject as Program<TestProject>;
   const provider = anchor.getProvider();
+  const arciumProgram = getArciumProgram(provider as anchor.AnchorProvider);
 
   type Event = anchor.IdlEvents<(typeof program)["idl"]>;
   const awaitEvent = async <E extends keyof Event>(
@@ -140,15 +141,11 @@ describe("TestProject", () => {
 
     console.log("Comp def pda is ", compDefPDA);
 
-    // Fetch mxeAccount to get lutOffsetSlot for dynamic LUT address
-    const arciumProgram = getArciumProgram(provider as anchor.AnchorProvider);
-    const mxeAccountAddress = getMXEAccAddress(program.programId);
-    const mxeAccount = await arciumProgram.account.mxeAccount.fetch(
-      mxeAccountAddress
-    );
+    const mxeAccount = getMXEAccAddress(program.programId);
+    const mxeAcc = await arciumProgram.account.mxeAccount.fetch(mxeAccount);
     const lutAddress = getLookupTableAddress(
       program.programId,
-      mxeAccount.lutOffsetSlot
+      mxeAcc.lutOffsetSlot
     );
 
     const sig = await program.methods
@@ -156,7 +153,7 @@ describe("TestProject", () => {
       .accounts({
         compDefAccount: compDefPDA,
         payer: owner.publicKey,
-        mxeAccount: mxeAccountAddress,
+        mxeAccount,
         addressLookupTable: lutAddress,
       })
       .signers([owner])
@@ -171,7 +168,13 @@ describe("TestProject", () => {
       "add_together",
       program.programId,
       rawCircuit,
-      true
+      true,
+      500,
+      {
+        skipPreflight: true,
+        preflightCommitment: "confirmed",
+        commitment: "confirmed",
+      }
     );
 
     return sig;
