@@ -3,7 +3,7 @@ use arcium_anchor::prelude::*;
 
 const COMP_DEF_OFFSET_ADD_TOGETHER: u32 = comp_def_offset("add_together");
 
-declare_id!("vZ2UZmdMAbgxwAKGdwWNoJf4Lpemc34hZaBVXYLYeE6");
+declare_id!("B5hQstSwkjVq53quQqxE95jPfPfUKi4Ejw4Kvv1AXWXW");
 
 #[arcium_program]
 pub mod test_project {
@@ -163,7 +163,10 @@ pub struct InitAddTogetherCompDef<'info> {
     /// CHECK: comp_def_account, checked by arcium program.
     /// Can't check it here as it's not initialized yet.
     pub comp_def_account: UncheckedAccount<'info>,
-    #[account(mut, address = derive_mxe_lut_pda!(mxe_account.lut_offset_slot))]
+    #[account(
+        mut,
+        address = derive_mxe_lut_pda!(mxe_account.lut_offset_slot)
+    )]
     /// CHECK: address_lookup_table, checked by arcium program.
     pub address_lookup_table: UncheckedAccount<'info>,
     #[account(address = LUT_PROGRAM_ID)]

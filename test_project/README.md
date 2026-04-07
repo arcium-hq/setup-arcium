@@ -65,7 +65,6 @@ pub mod my_program {
             ctx.accounts,
             computation_offset,
             args,
-            None,
             vec![AddTogetherCallback::callback_ix(
                 computation_offset,
                 &ctx.accounts.mxe_account,
