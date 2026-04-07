@@ -23,7 +23,7 @@ jobs:
 
 This will use the default versions:
 
-- Arcium: 0.9.0
+- Arcium: 0.9.7
 - Anchor: 0.32.1
 - Node.js: 20.18.0
 - Solana CLI: 2.3.0
