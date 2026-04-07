@@ -21,9 +21,9 @@ custom-panic = []
 
 [dependencies]
 anchor-lang = { version = "0.32.1", features = ["init-if-needed"] }
-arcium-client = { default-features = false, version = "=0.9.6" }
-arcium-macros = "=0.9.6"
-arcium-anchor = "=0.9.6"
+arcium-client = { default-features = false, version = "=0.9.7" }
+arcium-macros = "=0.9.7"
+arcium-anchor = "=0.9.7"
 # pin so that we do not have 1.13.*
 unicode-segmentation = { version = "=1.12.0"}
 
