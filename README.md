@@ -25,7 +25,7 @@ This will use the default versions:
 
 - Arcium: 0.10.1
 - Anchor: 1.0.1
-- Node.js: 20.18.0
+- Node.js: 24.10.0
 - Solana CLI: 3.1.10
 
 The `runner-arch-os` parameter is required. Options: `x86_64_linux`, `aarch64_macos`.
