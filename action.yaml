@@ -7,19 +7,19 @@ inputs:
   node-version:
     description: "Version of node.js to use"
     required: false
-    default: "20.18.0"
+    default: "24.10.0"
   solana-cli-version:
     description: "Version of Solana CLI to use. Must be greater than 2.0"
     required: false
-    default: "2.3.0"
+    default: "3.1.10"
   anchor-version:
     description: "Version of Anchor to use"
     required: false
-    default: "0.32.1"
+    default: "1.0.1"
   arcium-version:
     description: "Version of Arcium to use"
     required: false
-    default: '0.9.7'
+    default: '0.10.1'
   runner-arch-os:
     description: "Architecture and operating system of the runner. Options: x86_64_linux, aarch64_macos"
     required: true

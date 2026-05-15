@@ -23,10 +23,10 @@ jobs:
 
 This will use the default versions:
 
-- Arcium: 0.9.7
-- Anchor: 0.32.1
+- Arcium: 0.10.1
+- Anchor: 1.0.1
 - Node.js: 20.18.0
-- Solana CLI: 2.3.0
+- Solana CLI: 3.1.10
 
 The `runner-arch-os` parameter is required. Options: `x86_64_linux`, `aarch64_macos`.
 
@@ -38,8 +38,8 @@ steps:
   - uses: arcium-hq/setup-arcium@v0.9.3
     with:
       arcium-version: "0.9.3"
-      anchor-version: "0.32.1"
-      solana-cli-version: "2.3.0"
+      anchor-version: "1.0.1"
+      solana-cli-version: "3.1.10"
       node-version: "20.18.0"
       runner-arch-os: x86_64_linux
 ```
