@@ -15,7 +15,7 @@ inputs:
   anchor-version:
     description: "Version of Anchor to use"
     required: false
-    default: "1.0.1"
+    default: "1.0.2"
   arcium-version:
     description: "Version of Arcium to use"
     required: false
