@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: arcium-hq/setup-arcium@v0.9.0
+      - uses: arcium-hq/setup-arcium@v0.10.2
         with:
           runner-arch-os: x86_64_linux
       - run: arcium build
@@ -23,8 +23,8 @@ jobs:
 
 This will use the default versions:
 
-- Arcium: 0.10.1
-- Anchor: 1.0.1
+- Arcium: 0.10.2
+- Anchor: 1.0.2
 - Node.js: 24.10.0
 - Solana CLI: 3.1.10
 
@@ -35,12 +35,12 @@ The `runner-arch-os` parameter is required. Options: `x86_64_linux`, `aarch64_ma
 ```yaml
 steps:
   - uses: actions/checkout@v4
-  - uses: arcium-hq/setup-arcium@v0.9.3
+  - uses: arcium-hq/setup-arcium@v0.10.2
     with:
-      arcium-version: "0.9.3"
-      anchor-version: "1.0.1"
+      arcium-version: "0.10.2"
+      anchor-version: "1.0.2"
       solana-cli-version: "3.1.10"
-      node-version: "20.18.0"
+      node-version: "24.10.0"
       runner-arch-os: x86_64_linux
 ```
 
