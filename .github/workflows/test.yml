@@ -65,7 +65,7 @@ jobs:
         with:
           path: |
             test_project/build
-            test_project/artifacts/circuit_hash.txt
+            test_project/artifacts/circuits_hash.txt
           key: encrypted-ixs-${{ runner.os }}-${{ hashFiles('test_project/encrypted-ixs/**') }}
       - name: Setup tmp directories
         run: |
