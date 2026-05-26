@@ -65,8 +65,8 @@ jobs:
         with:
           path: |
             test_project/build
-            test_project/artifacts/circuit_hash.txt
-          key: encrypted-ixs-${{ runner.os }}-${{ hashFiles('test_project/encrypted-ixs/**') }}
+            test_project/artifacts/circuits_hash.txt
+          key: encrypted-ixs-${{ runner.os }}-${{ hashFiles('action.yaml', 'test_project/Cargo.toml', 'test_project/Cargo.lock', 'test_project/encrypted-ixs/**') }}
       - name: Setup tmp directories
         run: |
           rm -rf /tmp/computation_folder_0 /tmp/computation_folder_1 /tmp/computation_folder_2 /tmp/vault
