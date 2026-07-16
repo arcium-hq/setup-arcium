@@ -32,10 +32,10 @@
   resolved "https://registry.yarnpkg.com/@anchor-lang/errors/-/errors-1.1.2.tgz#25d5685ed03aadf3acfe47a4795bd28b5aef699a"
   integrity sha512-+l5fLYF79t7LAYz+YbjjLzmjj6U1za6Q0cH4GBMWx4vUijlPTkm9Oj/cyDPLJG6Hsx+VFxceh7/+qbca5nnEmg==
 
-"@arcium-hq/client@0.13.1":
-  version "0.13.1"
-  resolved "https://registry.yarnpkg.com/@arcium-hq/client/-/client-0.13.1.tgz#49e7dc797c9ad09e157181f7c658640a48335607"
-  integrity sha512-KcZvrcdraOmZwmDMAuMxaijIBLqb0Zi7144lL/Xt8Ehfm/tfbWMHaKKQ1U9VlWgHUli9aCLqQtkrOLUB3N3a1Q==
+"@arcium-hq/client@0.13.2":
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/@arcium-hq/client/-/client-0.13.2.tgz#1bc3370d137127bc0743900c9724142c7b4c49d4"
+  integrity sha512-lAS/iRsYFoPlGaePl2d/6wOOexQn+cy7JfDCmoKYy3oIJk6zvbo8fB+lamZetiHX2S/EH/5GRpZxax3h7RAl8A==
   dependencies:
     "@anchor-lang/core" "^1.0.2"
     "@noble/curves" "^1.9.5"
@@ -1080,14 +1080,14 @@ wrappy@1:
   integrity sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==
 
 ws@^7.5.10:
-  version "7.5.11"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.11.tgz#9460daf1812bb81a423c5b9eac746941a86310fa"
-  integrity sha512-zS54Oen9bITtp7kp2XM3AydrCIq1D+HwJOuH+c+e4LfpL/lotP5osijd+UoMnxwAam1GN8R4KtLAyIrIcBNpiA==
+  version "7.5.12"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.12.tgz#4ca2c04966db4dcd2f9bc4d1419d23cd1e4a18db"
+  integrity sha512-1xGnbYN3zbog9CwuNDQULNRrTCLIn46/WmpR1f0w6PsCYQHkylZr5vkd6kfMZYV6pRnQkcPNRyiA8LsrNKyhpg==
 
 ws@^8.5.0:
-  version "8.21.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.21.0.tgz#012e413fc07429945121b0c153158c4343086951"
-  integrity sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==
+  version "8.21.1"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.21.1.tgz#045650cd4b1207809e7547146223c3814a9af586"
+  integrity sha512-+0NTnW77fFN/DjQi6k/Sq/Yvk4Sgajw7urW8V+asjXnRgDs9gyGkdb7EzgfhA4goXsRIZKE28fzIXBHEzhuiWw==
 
 y18n@^5.0.5:
   version "5.0.8"
